@@ -9,7 +9,7 @@ pipeline {
         stage('Build Function') {
             steps {
                 script {
-                    sh 'pip install -r requirements.txt -t ./lambda_code'
+                    sh 'pip3 install -r requirements.txt -t ./lambda_code'
                 }
             }
             
