@@ -7,9 +7,12 @@ pipeline {
             }
         }
         stage('Build Function') {
-            script {
+            steps {
+                script {
                     sh 'pip install -r requirements.txt -t ./lambda_code'
                 }
+            }
+            
         }
         stage('Terraform Init') {
             steps {
