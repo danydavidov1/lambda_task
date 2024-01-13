@@ -34,30 +34,37 @@ pipeline {
         }
         stage('Terraform Apply') {
             steps {
-                sh 'aws sts get-caller-identity'
-                sh 'pwd'
-                sh 'cd ./iac && terraform apply -auto-approve tfplan'
+                script {
+                    try {
+                        sh 'aws sts get-caller-identity'
+                        sh 'cd ./iac && terraform apply -auto-approve tfplan'
+                    } catch (Exception e) {
+                        sh 'cd ./iac && terraform destory -auto-approve'
+                    }
+                }
+                
             }
         }
         stage('Upload State to S3') {
             steps {
-                sh 'aws sts get-caller-identity'
-                sh "cd ./iac && aws s3 cp terraform.tfstate s3://daniel-lab-state-bucket/${env.BUILD_NUMBER}/"
-                sh 'pwd'
+                script {
+                    try {
+                        sh 'aws sts get-caller-identity'
+                        sh "cd ./iac && aws s3 cp terraform.tfstate s3://daniel-lab-state-bucket/${env.BUILD_NUMBER}/"
+                    } catch (Exception e) {
+                        sh """
+                            mkdir -p /tmp/tfstate/${env.BUILD_NUMBER}
+                            cd ./iac && cp terraform.tfstate /tmp/tfstate/${env.BUILD_NUMBER}/
+                        """
+                    }
+                }
+                
             }
         }
     }
     post {
         always {
             cleanWs()
-        }
-        failure {
-            withAWS(credentials: 'daniel-creds') {
-                    sh 'aws sts get-caller-identity'
-                    script {
-                        sh "cd ./iac && terraform apply -auto-approve"
-                    }
-                }
         }
     }
 }
