@@ -23,7 +23,7 @@ pipeline {
         }
         stage('Terraform Plan') {
             steps {
-                withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
+                withAWS(credentials: 'daniel-creds') {
                     sh 'aws sts get-caller-identity'
                     script {
                         sh 'cd ./iac && terraform plan -out=tfplan'
@@ -34,7 +34,7 @@ pipeline {
         }
         stage('Terraform Apply') {
             steps {
-                withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
+                withAWS(credentials: 'daniel-creds') {
                     sh 'aws sts get-caller-identity'
                     script {
                         sh 'cd ./iac && terraform apply -auto-approve tfplan'
@@ -44,7 +44,7 @@ pipeline {
         }
         stage('Upload State to S3') {
             steps {
-                withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
+                withAWS(credentials: 'daniel-creds') {
                     sh 'aws sts get-caller-identity'
                     script {
                         sh "cd ./iac && aws s3 cp terraform.tfstate s3://daniel-lab-state-bucket/${env.BUILD_NUMBER}/"
