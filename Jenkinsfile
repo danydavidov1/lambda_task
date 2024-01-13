@@ -23,22 +23,32 @@ pipeline {
         }
         stage('Terraform Plan') {
             steps {
-                script {
-                    sh 'cd ./iac && terraform plan -out=tfplan'
+                withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
+                    sh 'aws sts get-caller-identity'
+                    script {
+                        sh 'cd ./iac && terraform plan -out=tfplan'
+                    }
                 }
+                
             }
         }
         stage('Terraform Apply') {
             steps {
-                script {
-                    sh 'cd ./iac && terraform apply -auto-approve tfplan'
+                withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
+                    sh 'aws sts get-caller-identity'
+                    script {
+                        sh 'cd ./iac && terraform apply -auto-approve tfplan'
+                    }
                 }
             }
         }
         stage('Upload State to S3') {
             steps {
-                script {
-                    sh "cd ./iac && aws s3 cp terraform.tfstate s3://daniel-lab-state-bucket/${env.BUILD_NUMBER}/"
+                withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
+                    sh 'aws sts get-caller-identity'
+                    script {
+                        sh "cd ./iac && aws s3 cp terraform.tfstate s3://daniel-lab-state-bucket/${env.BUILD_NUMBER}/"
+                    }
                 }
             }
         }
