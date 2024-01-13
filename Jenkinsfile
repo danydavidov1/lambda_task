@@ -57,5 +57,13 @@ pipeline {
         always {
             cleanWs()
         }
+        failure {
+            withAWS(credentials: 'daniel-creds') {
+                    sh 'aws sts get-caller-identity'
+                    script {
+                        sh "cd ./iac && terraform apply -auto-approve"
+                    }
+                }
+        }
     }
 }
