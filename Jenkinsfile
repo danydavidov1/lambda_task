@@ -27,7 +27,7 @@ pipeline {
         }
         stage('Terraform Plan') {
             steps {
-                sh 'pwd'
+                sh 'pwd && ls'
                 sh 'aws sts get-caller-identity'    
                 // sh 'cd ./iac && terraform plan -out=tfplan'
             }
