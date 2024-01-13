@@ -50,13 +50,13 @@ pipeline {
                 script {
                     try {
                         sh 'aws sts get-caller-identity'
-                        // sh "cd ./iac && aws s3 cp terraform.tfstate s3://daniel-lab-state-bucket/${env.BUILD_NUMBER}/"
-                        sh "cd ./iac && aws s3 cp terraform.tfstate s3://daniel-lab-tate-bucket/${env.BUILD_NUMBER}/"
+                        sh "cd ./iac && aws s3 cp terraform.tfstate s3://daniel-lab-state-bucket/${env.BUILD_NUMBER}/"
                     } catch (Exception e) {
                         sh """
                             mkdir -p /tmp/tfstate/${env.BUILD_NUMBER}
                             cd ./iac && cp terraform.tfstate /tmp/tfstate/${env.BUILD_NUMBER}/
                         """
+                        echo "faild to upload terraform state to bucket, state location on agent: /tmp/tfstate/${env.BUILD_NUMBER}/"
                     }
                 }
                 
