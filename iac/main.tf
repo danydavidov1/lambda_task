@@ -86,7 +86,7 @@ resource "aws_api_gateway_deployment" "prod" {
     }
 }
 
-resource "aws_api_gateway_stage" "example" {
+resource "aws_api_gateway_stage" "prod" {
   deployment_id = aws_api_gateway_deployment.prod.id
   rest_api_id   = aws_api_gateway_rest_api.lab_api_gw.id
   stage_name    = "prod"
