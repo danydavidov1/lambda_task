@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment {
+        AWS_ACCESS_KEY_ID     = credentials('aws_access_key_id')
+        AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
+    }
     stages {
         stage('Checkout Code') {
             steps {
@@ -23,36 +27,23 @@ pipeline {
         }
         stage('Terraform Plan') {
             steps {
-                withAWS(credentials: 'daniel-creds') {
-                    sh 'aws sts get-caller-identity'
-                    script {
-                        sh 'pwd'
-                        // sh 'cd ./iac && terraform plan -out=tfplan'
-                    }
-                }
-                
+                sh 'pwd'
+                sh 'aws sts get-caller-identity'    
+                // sh 'cd ./iac && terraform plan -out=tfplan'
             }
         }
         stage('Terraform Apply') {
             steps {
-                withAWS(credentials: 'daniel-creds') {
-                    sh 'aws sts get-caller-identity'
-                    script {
-                        sh 'pwd'
-                        // sh 'cd ./iac && terraform apply -auto-approve tfplan'
-                    }
-                }
+                sh 'aws sts get-caller-identity'
+                sh 'pwd'
+                // sh 'cd ./iac && terraform apply -auto-approve tfplan'
             }
         }
         stage('Upload State to S3') {
             steps {
-                withAWS(credentials: 'daniel-creds') {
-                    sh 'aws sts get-caller-identity'
-                    script {
-                        // sh "cd ./iac && aws s3 cp terraform.tfstate s3://daniel-lab-state-bucket/${env.BUILD_NUMBER}/"
-                        sh 'pwd'
-                    }
-                }
+                sh 'aws sts get-caller-identity'
+                // sh "cd ./iac && aws s3 cp terraform.tfstate s3://daniel-lab-state-bucket/${env.BUILD_NUMBER}/"
+                sh 'pwd'
             }
         }
     }
