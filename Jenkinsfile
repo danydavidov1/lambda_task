@@ -29,20 +29,20 @@ pipeline {
             steps {
                 sh 'pwd && ls'
                 sh 'aws sts get-caller-identity'    
-                // sh 'cd ./iac && terraform plan -out=tfplan'
+                sh 'cd ./iac && terraform plan -out=tfplan'
             }
         }
         stage('Terraform Apply') {
             steps {
                 sh 'aws sts get-caller-identity'
                 sh 'pwd'
-                // sh 'cd ./iac && terraform apply -auto-approve tfplan'
+                sh 'cd ./iac && terraform apply -auto-approve tfplan'
             }
         }
         stage('Upload State to S3') {
             steps {
                 sh 'aws sts get-caller-identity'
-                // sh "cd ./iac && aws s3 cp terraform.tfstate s3://daniel-lab-state-bucket/${env.BUILD_NUMBER}/"
+                sh "cd ./iac && aws s3 cp terraform.tfstate s3://daniel-lab-state-bucket/${env.BUILD_NUMBER}/"
                 sh 'pwd'
             }
         }
