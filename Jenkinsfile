@@ -26,7 +26,8 @@ pipeline {
                 withAWS(credentials: 'daniel-creds') {
                     sh 'aws sts get-caller-identity'
                     script {
-                        sh 'cd ./iac && terraform plan -out=tfplan'
+                        sh 'pwd'
+                        // sh 'cd ./iac && terraform plan -out=tfplan'
                     }
                 }
                 
@@ -37,7 +38,8 @@ pipeline {
                 withAWS(credentials: 'daniel-creds') {
                     sh 'aws sts get-caller-identity'
                     script {
-                        sh 'cd ./iac && terraform apply -auto-approve tfplan'
+                        sh 'pwd'
+                        // sh 'cd ./iac && terraform apply -auto-approve tfplan'
                     }
                 }
             }
@@ -47,7 +49,8 @@ pipeline {
                 withAWS(credentials: 'daniel-creds') {
                     sh 'aws sts get-caller-identity'
                     script {
-                        sh "cd ./iac && aws s3 cp terraform.tfstate s3://daniel-lab-state-bucket/${env.BUILD_NUMBER}/"
+                        // sh "cd ./iac && aws s3 cp terraform.tfstate s3://daniel-lab-state-bucket/${env.BUILD_NUMBER}/"
+                        sh 'pwd'
                     }
                 }
             }
